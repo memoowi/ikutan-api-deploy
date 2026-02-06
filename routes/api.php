@@ -33,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['middleware' => ['role:admin']], function () {
         // Create Event
         Route::post('/event', [EventController::class, 'store']);
+        // Update Event
+        Route::post('/event/{eventId}', [EventController::class, 'update']);
+        // Delete Event
+        Route::delete('/event/{eventId}', [EventController::class, 'delete']);
     });
 
     // ATTENDEE ONLY

@@ -51,4 +51,59 @@ class EventController extends Controller
 
         return $this->successResponse($event, 'Event fetched successfully', 200);
     }
+    public function update(Request $request, $eventId)
+    {
+        $event = Event::find($eventId);
+
+        if (!$event) {
+            return $this->errorResponse('Event not found', 404);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'desc' => 'required|string',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:png,jpg,jpeg|max:2048',
+            'date' => 'required|date',
+            'max_reservation' => 'required|integer|min:1',
+        ]);
+
+        $paths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('events', 'public');
+                $paths[] = Storage::url($path);
+            }
+        }
+
+        $validated['images'] = $paths;
+
+        // delete old files
+        foreach ($event->images as $image) {
+            $path = str_replace('/storage/', '', $image);
+            Storage::disk('public')->delete($path);
+        }
+
+        $event->update($validated);
+
+        return $this->successResponse($event, 'Event created successfully', 201);
+    }
+    public function delete($eventId)
+    {
+        $event = Event::find($eventId);
+
+        if (!$event) {
+            return $this->errorResponse('Event not found', 404);
+        }
+
+        // delete old files
+        foreach ($event->images as $image) {
+            $path = str_replace('/storage/', '', $image);
+            Storage::disk('public')->delete($path);
+        }
+
+        $event->delete();
+
+        return $this->successResponse(null, 'Event deleted successfully', 200);
+    }
 }
