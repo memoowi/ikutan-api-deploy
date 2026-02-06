@@ -29,6 +29,7 @@ class AuthController extends Controller
 
         $data = [
             'token' => $user->createToken('api_token')->plainTextToken,
+            'user' => $user
         ];
 
         return $this->successResponse($data, 'User registered successfully', 201);
@@ -52,6 +53,7 @@ class AuthController extends Controller
 
         $data = [
             'token' => $user->createToken('api_token')->plainTextToken,
+            'user' => $user
         ];
 
         return $this->successResponse($data, 'User logged in successfully', 200);
