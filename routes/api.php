@@ -40,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/event/{eventId}', [EventController::class, 'delete']);
         // Get Ticket List by Event
         Route::get('/event/{eventId}/ticket', [TicketController::class, 'indexByEvent']);
+        // CheckIn
+        Route::patch('/checkin', [TicketController::class, 'checkin']);
     });
 
     // ATTENDEE ONLY

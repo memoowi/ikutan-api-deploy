@@ -38,12 +38,20 @@ class EventController extends Controller
     }
     public function index()
     {
-        $events = Event::latest()->get();
+        $events = Event::withCount([
+            'tickets' => function ($query) {
+                $query->where('is_canceled', false);
+            },
+        ])->latest()->get();
         return $this->successResponse($events, 'Events fetched successfully', 200);
     }
     public function show($eventId)
     {
-        $event = Event::find($eventId);
+        $event = Event::withCount([
+            'tickets' => function ($query) {
+                $query->where('is_canceled', false);
+            }
+        ])->find($eventId);
 
         if (!$event) {
             return $this->errorResponse('Event not found', 404);

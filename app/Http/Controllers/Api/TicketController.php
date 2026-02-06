@@ -105,4 +105,21 @@ class TicketController extends Controller
 
         return $this->successResponse(null, 'Ticket canceled successfully', 200);
     }
+    public function checkin(Request $request)
+    {
+        $code = $request->input('code');
+        $ticket = Ticket::where('code', $code)->where('is_canceled', false)->first();
+        if (!$ticket) {
+            return $this->errorResponse('Ticket not found', 404);
+        }
+        if ($ticket->is_canceled) {
+            return $this->errorResponse('Ticket is already canceled', 400);
+        }
+        if ($ticket->checked_at) {
+            return $this->errorResponse('Ticket is already checked in', 400);
+        }
+        $ticket->checked_at = now();
+        $ticket->save();
+        return $this->successResponse(null, 'Ticket checked in successfully', 200);
+    }
 }
