@@ -23,7 +23,7 @@ class EventController extends Controller
         ]);
 
         $paths = [];
-        if($request->hasFile('images')) {
+        if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('events', 'public');
                 $paths[] = Storage::url($path);
@@ -35,5 +35,20 @@ class EventController extends Controller
         $event = Event::create($validated);
 
         return $this->successResponse($event, 'Event created successfully', 201);
+    }
+    public function index()
+    {
+        $events = Event::latest()->get();
+        return $this->successResponse($events, 'Events fetched successfully', 200);
+    }
+    public function show($eventId)
+    {
+        $event = Event::find($eventId);
+
+        if (!$event) {
+            return $this->errorResponse('Event not found', 404);
+        }
+
+        return $this->successResponse($event, 'Event fetched successfully', 200);
     }
 }

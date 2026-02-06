@@ -24,6 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
+    // Get Event Index
+    Route::get('/event', [EventController::class, 'index']);
+    // Get Event Detail
+    Route::get('/event/{eventId}', [EventController::class, 'show']);
 
     // ADMIN ONLY
     Route::group(['middleware' => ['role:admin']], function () {
