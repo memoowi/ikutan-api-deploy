@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EventController;
+use App\Http\Controllers\Api\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,11 +38,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/event/{eventId}', [EventController::class, 'update']);
         // Delete Event
         Route::delete('/event/{eventId}', [EventController::class, 'delete']);
+        // Get Ticket List by Event
+        Route::get('/event/{eventId}/ticket', [TicketController::class, 'indexByEvent']);
     });
 
     // ATTENDEE ONLY
     Route::group(['middleware' => ['role:attendee']], function () {
-        // 
+        // Reserve Ticket
+        Route::post(('/event/{eventId}/reserve'), [TicketController::class, 'store']);
+        // My Ticket List
+        Route::get('/my-tickets', [TicketController::class, 'indexByUser']);
     });
 });
 
