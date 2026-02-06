@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post(('/event/{eventId}/reserve'), [TicketController::class, 'store']);
         // My Ticket List
         Route::get('/my-tickets', [TicketController::class, 'indexByUser']);
+        // Cancel Ticket
+        Route::patch('/ticket/{ticketId}/cancel', [TicketController::class, 'cancel']);
     });
 });
 

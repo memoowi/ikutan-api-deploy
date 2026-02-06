@@ -27,6 +27,11 @@ class TicketController extends Controller
         try {
             $event = Event::where('id', $eventId)->lockForUpdate()->firstOrFail();
 
+            if ($event->date < now()) {
+                DB::rollBack();
+                return $this->errorResponse('Event has already started', 400);
+            }
+
             $exisitingTicket = Ticket::where( 'user_id', $user->id)->where('event_id', $event->id)->where('is_canceled', false)->exists();
 
             if ($exisitingTicket) {
@@ -83,5 +88,21 @@ class TicketController extends Controller
 
         $tickets = $event->tickets()->where('is_canceled', false)->latest()->get();
         return $this->successResponse($tickets, 'Tickets fetched successfully', 200);
+    }
+    public function cancel(Request $request, $ticketId)
+    {
+        $ticket = Ticket::find($ticketId);
+        if (!$ticket) {
+            return $this->errorResponse('Ticket not found', 404);
+        }
+
+        if ($ticket->is_canceled) {
+            return $this->errorResponse('Ticket is already canceled', 400);
+        }
+
+        $ticket->is_canceled = true;
+        $ticket->save();
+
+        return $this->successResponse(null, 'Ticket canceled successfully', 200);
     }
 }
