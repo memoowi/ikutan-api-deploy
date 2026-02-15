@@ -15,7 +15,7 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignUlid('event_id')->constrained('events')->cascadeOnDelete();
-            $table->text('code')->unique();
+            $table->string('code')->unique();
             $table->timestamp('checked_at')->nullable();
             $table->boolean('is_canceled')->default(false);
             $table->timestamps();
