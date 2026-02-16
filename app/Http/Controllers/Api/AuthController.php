@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     use ApiResponse;
+    /**
+     * @unauthenticated
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -29,11 +32,14 @@ class AuthController extends Controller
 
         $data = [
             'token' => $user->createToken('api_token')->plainTextToken,
-            'user' => $user
+            'user' => $user,
         ];
 
         return $this->successResponse($data, 'User registered successfully', 201);
     }
+    /**
+     * @unauthenticated
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -43,7 +49,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user ) {
+        if (!$user) {
             return $this->errorResponse('User with this email does not exist', 404);
         }
 
@@ -53,7 +59,7 @@ class AuthController extends Controller
 
         $data = [
             'token' => $user->createToken('api_token')->plainTextToken,
-            'user' => $user
+            'user' => $user,
         ];
 
         return $this->successResponse($data, 'User logged in successfully', 200);
