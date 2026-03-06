@@ -36,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
         // Requiring authentication
         Scramble::configure()->withDocumentTransformers(function (OpenApi $openApi) {
             $openApi->secure(SecurityScheme::http('bearer'));
+            $openApi->secure(SecurityScheme::apiKey('query', 'api_key'));
+            $openApi->secure(SecurityScheme::apiKey('header', 'X-API-Key'));
         });
     }
 }
