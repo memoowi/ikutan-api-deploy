@@ -69,4 +69,9 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return $this->successResponse(null, 'User logged out successfully', 200);
     }
+    public function me(Request $request)
+    {
+        return response()->json($request->user(), 200);
+        // return $this->successResponse($request->user(), 'User fetched successfully', 200);
+    }
 }
